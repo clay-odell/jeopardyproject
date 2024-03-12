@@ -20,41 +20,31 @@
 
 let categories = [];
 
-
-
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
  */
 
-async function getCategoryIds(NUM_CATEGORIES) {
-    const response = await axios.get(`https://rithm-jeopardy.herokuapp.com/api/categories?count=${NUM_CATEGORIES}`);
-    return response.data.map(category => category.id);
-    }
-
-/** Return object with data about a category:
- *
- *  Returns { title: "Math", clues: clue-array }
- *
- * Where clue-array is:
- *   [
- *      {question: "Hamlet Author", answer: "Shakespeare", showing: null},
- *      {question: "Bell Jar Author", answer: "Plath", showing: null},
- *      ...
- *   ]
- */
+async function getCategoryIds(numCategories) {
+  const response = await axios.get(
+    `https://rithm-jeopardy.herokuapp.com/api/categories?count=${numCategories}`
+  );
+  return response.data.map((category) => category.id);
+}
 
 async function getCategory(catId) {
-    const response = await axios.get(`https:rithm-jeopardy.herokuapp.com/api/category/id=${catId}`);
-    let category = {    
-        title: response.data.title,
-        clue: response.data.clues.map(clue =>({
-            question: clue.question,
-            answer: clue.answer,
-            showing: "?",
-        }));
-        return category;
-    }
+  const response = await axios.get(
+    `https:rithm-jeopardy.herokuapp.com/api/category/id=${catId}`
+  );
+  let category = {
+    title: response.data.title,
+    clue: response.data.clues.map((clue) => ({
+      question: clue.question,
+      answer: clue.answer,
+      showing: "?",
+    })),
+  };
+  return category;
 }
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
@@ -65,8 +55,7 @@ async function getCategory(catId) {
  *   (initally, just show a "?" where the question/answer would go.)
  */
 
-async function fillTable() {
-}
+async function fillTable() {}
 
 /** Handle clicking on a clue: show the question or answer.
  *
@@ -76,21 +65,17 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-function handleClick(evt) {
-}
+function handleClick(evt) {}
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
  */
 
-function showLoadingView() {
-
-}
+function showLoadingView() {}
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
-function hideLoadingView() {
-}
+function hideLoadingView() {}
 
 /** Start game:
  *
@@ -99,8 +84,7 @@ function hideLoadingView() {
  * - create HTML table
  * */
 
-async function setupAndStart() {
-}
+async function setupAndStart() {}
 
 /** On click of start / restart button, set up game. */
 
