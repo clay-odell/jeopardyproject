@@ -26,10 +26,15 @@ let categories = [];
  */
 
 async function getCategoryIds(numCategories) {
-  const response = await axios.get(
-    `https://rithm-jeopardy.herokuapp.com/api/categories?count=${numCategories}`
-  );
-  return response.data.map((category) => category.id);
+  const response = await axios.get("https://rithm-jeopardy.herokuapp.com/api/categories?count=100");
+  const allCategories = response.data.map((category) => category.id);
+  const selectedCategories = [];
+  for (let i = 0; i < numCategories; i++) {
+    const randomIndex = Math.floor(Math.random() * allCategories.length);
+    selectedCategories.push(allCategories[randomIndex]);
+    allCategories.splice(randomIndex, 1);
+  }
+  return selectedCategories;
 }
 
 async function getCategory(catId) {
