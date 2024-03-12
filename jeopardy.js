@@ -21,13 +21,16 @@
 let categories = [];
 
 
+
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
  */
 
-function getCategoryIds() {
-}
+async function getCategoryIds(NUM_CATEGORIES) {
+    const response = await axios.get(`https://rithm-jeopardy.herokuapp.com/api/categories?count=${NUM_CATEGORIES}`);
+    return response.data.map(category => category.id);
+    }
 
 /** Return object with data about a category:
  *
@@ -41,7 +44,17 @@ function getCategoryIds() {
  *   ]
  */
 
-function getCategory(catId) {
+async function getCategory(catId) {
+    const response = await axios.get(`https:rithm-jeopardy.herokuapp.com/api/category/id=${catId}`);
+    let category = {    
+        title: response.data.title,
+        clue: response.data.clues.map(clue =>({
+            question: clue.question,
+            answer: clue.answer,
+            showing: "?",
+        }));
+        return category;
+    }
 }
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
