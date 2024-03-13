@@ -20,10 +20,7 @@
 
 let categories = [];
 
-/** Get NUM_CATEGORIES random category from API.
- *
- * Returns array of category ids
- */
+/*getCategoryIds fetches 100 categories from the Jeopardy API and selects a specified number (numCategories) random categories from this set, and returns their IDs*/
 
 async function getCategoryIds(numCategories) {
   const response = await axios.get("https://rithm-jeopardy.herokuapp.com/api/categories?count=100");
@@ -36,10 +33,10 @@ async function getCategoryIds(numCategories) {
   }
   return selectedCategories;
 }
-
+/* Fetches category data from the Jeopardy API for a given ID and returns an object with the category title and an array of clues (each with a question, answer, and default showing state). */
 async function getCategory(catId) {
   const response = await axios.get(
-    `https:rithm-jeopardy.herokuapp.com/api/category/id=${catId}`
+    `https:rithm-jeopardy.herokuapp.com/api/category/?id=${catId}`
   );
   let category = {
     title: response.data.title,
@@ -52,15 +49,43 @@ async function getCategory(catId) {
   return category;
 }
 
-/** Fill the HTML table#jeopardy with the categories & cells for questions.
- *
- * - The <thead> should be filled w/a <tr>, and a <td> for each category
- * - The <tbody> should be filled w/NUM_QUESTIONS_PER_CAT <tr>s,
- *   each with a question for each category in a <td>
- *   (initally, just show a "?" where the question/answer would go.)
+/**
+ * Asynchronously fetches and displays a table of Jeopardy questions.
+ * 
+ * This function fetches a specified number of categories from the Jeopardy API,
+ * selects a specified number of random questions from each category, and then
+ * displays this information in a table. The table's header contains the category
+ * titles, and the body contains the questions. Initially, each cell in the body
+ * displays a "?".
  */
 
-async function fillTable() {}
+
+async function fillTable() {
+    const numCategories = 6;
+    const numQuestionsPerCat = 5;
+    const catIds = await getCategoryIds(numCategories);
+    for (let catId of catIds) {
+        const category = await getCategory(catId);
+        categories.push(category);
+      }
+      const $thead = $("thead");
+      $thead.empty();
+      let $tr = $("<tr>");
+      for (let [catIdx, category] of categories.entries()) {
+        $tr.append($("<th>").text(category.title));
+      }
+      $thead.append($tr);
+      const $tbody = $("tbody");
+  $tbody.empty();
+  for (let clueIdx = 0; clueIdx < numQuestionsPerCat; clueIdx++) {
+    $tr = $("<tr>");
+    for (let [catIdx, category] of categories.entries()) {
+      $tr.append($("<td>").attr("id", `${catIdx}-${clueIdx}`).text("?"));
+    }
+    $tbody.append($tr);
+  }
+}
+   
 
 /** Handle clicking on a clue: show the question or answer.
  *
