@@ -87,15 +87,27 @@ async function fillTable() {
 }
    
 
-/** Handle clicking on a clue: show the question or answer.
+/**
+ * Handles the event of a user clicking on a cell in a Jeopardy game.
  *
- * Uses .showing property on clue to determine what to show:
- * - if currently null, show question & set .showing to "question"
- * - if currently "question", show answer & set .showing to "answer"
- * - if currently "answer", ignore click
- * */
+ * This function retrieves the clue associated with the clicked cell, determines
+ * whether to display the question, answer, or ignore the click based on the 
+ * current state of the cell, and updates the cell's text accordingly.
+ */
 
-function handleClick(evt) {}
+function handleClick(evt) {
+    const id = evt.target.id;
+    const [catIdx, clueIdx] = id.split("-");
+    const clue = categories[catIdx].clue[clueIdx];
+    let msg;
+    msg = !clue.showing ? clue.question :
+    (clue.showing === "question" ? clue.answer: null);
+    if(msg === null){
+        return;
+    }
+    clue.showing = clue.showing ? "answer" : "question";
+    $(`#${id}`).text(msg);
+}
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
