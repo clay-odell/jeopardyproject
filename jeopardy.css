@@ -5,6 +5,66 @@
   #8d2ab5
   #74119c
 */
+body {
+  background-color: #000066;
+  color: #ffff4d;
+  font-family: 'Arial', sans-serif;
+}
+h1{
+  color:#f3f3f3;
+  text-shadow: 2px 2px 5px #115ff4;
+  text-align: center;
+  font-size: 50px;
+}
+button {
+  background-color: #ced2d8;
+  color: #3814eb;
+  border: 2px solid #111112;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 2px;
+  text-align: center;
+}
+button:hover {
+  background-color: #060ce9;
+  color: #ffff4d;
+  border: 2px solid #060ce9;
+}
+table {
+  margin: auto;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #0000ff;
+}
+
+th, td {
+  border: 1px solid #ffff4d;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+td {
+  background-color: #0000ff;
+  cursor: pointer;
+}
+
+td:hover {
+  background-color: #8080ff;
+}
+
+/* #jeopardy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust as needed */
+
+
 .spinner {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
