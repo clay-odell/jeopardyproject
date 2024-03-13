@@ -19,20 +19,18 @@
 //  ]
 
 let categories = [];
-
+const spinner = $('<div>', { class: 'spinner', style: 'display: none;' });
+const fetchButton = $( "<button id='fetch-button' disabled>Fetch Data</button>" );
 /*getCategoryIds fetches 100 categories from the Jeopardy API and selects a specified number (numCategories) random categories from this set, and returns their IDs*/
 
 async function getCategoryIds(numCategories) {
   const response = await axios.get("https://rithm-jeopardy.herokuapp.com/api/categories?count=100");
   const allCategories = response.data.map((category) => category.id);
-  const selectedCategories = [];
-  for (let i = 0; i < numCategories; i++) {
-    const randomIndex = Math.floor(Math.random() * allCategories.length);
-    selectedCategories.push(allCategories[randomIndex]);
-    allCategories.splice(randomIndex, 1);
-  }
+  const selectedCategories = _.sampleSize(allCategories, numCategories);
   return selectedCategories;
-}
+  }
+  
+
 /* Fetches category data from the Jeopardy API for a given ID and returns an object with the category title and an array of clues (each with a question, answer, and default showing state). */
 async function getCategory(catId) {
   const response = await axios.get(
@@ -113,7 +111,13 @@ function handleClick(evt) {
  * and update the button used to fetch data.
  */
 
-function showLoadingView() {}
+function showLoadingView() {
+    $("thead").empty();
+    $("tbody").empty();
+    spinner.show();
+    $("body").append(fetchButton); 
+    fetchButton.prop("disabled", false);
+}
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
