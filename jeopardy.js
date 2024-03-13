@@ -4,42 +4,41 @@ $("body").append($jeopardy);
 /*getCategoryIds fetches 100 categories from the Jeopardy API and selects a specified number (numCategories) random categories from this set, and returns their IDs*/
 
 async function getCategoryIds(numCategories) {
-    try {
-      const response = await axios.get(
-        "https://rithm-jeopardy.herokuapp.com/api/categories?count=100"
-      );
-      const allCategories = response.data.map((category) => category.id);
-      const selectedCategories = _.shuffle(_.sampleSize(allCategories, numCategories));
-      return selectedCategories;
-    } catch (error) {
-      console.error("Category Ids couldn't be retrieved", error);
-    }
+  try {
+    const response = await axios.get(
+      "https://rithm-jeopardy.herokuapp.com/api/categories?count=100"
+    );
+    const allCategories = response.data.map((category) => category.id);
+    const selectedCategories = _.shuffle(
+      _.sampleSize(allCategories, numCategories)
+    );
+    return selectedCategories;
+  } catch (error) {
+    console.error("Category Ids couldn't be retrieved", error);
   }
+}
 
 /* Fetches category data from the Jeopardy API for a given ID and returns an object with the category title and an array of clues (each with a question, answer, and default showing state). Clues are shuffled as well*/
 async function getCategory(catId) {
-    try {
-      const response = await axios.get(
-        `https://rithm-jeopardy.herokuapp.com/api/category/?id=${catId}`
-      );
-      const shuffledClues = _.shuffle(response.data.clues);
-  
-      let category = {
-        title: response.data.title.toUpperCase(),
-        clue: shuffledClues.slice(0, 5).map((clue) => ({
-          question: clue.question.toUpperCase(),
-          answer: clue.answer.toUpperCase(),
-          showing: "?",
-        })),
-      };
-      return category;
-    } catch (error) {
-      console.error("Category fetching failed...", error);
-      
-    }
-  }
-  
+  try {
+    const response = await axios.get(
+      `https://rithm-jeopardy.herokuapp.com/api/category/?id=${catId}`
+    );
+    const shuffledClues = _.shuffle(response.data.clues);
 
+    let category = {
+      title: response.data.title.toUpperCase(),
+      clue: shuffledClues.slice(0, 5).map((clue) => ({
+        question: clue.question.toUpperCase(),
+        answer: clue.answer.toUpperCase(),
+        showing: "?",
+      })),
+    };
+    return category;
+  } catch (error) {
+    console.error("Category fetching failed...", error);
+  }
+}
 
 /**
  * Asynchronously fetches and displays a table of Jeopardy questions.
@@ -52,8 +51,8 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    const numCategories = 6;
-    categories = [];
+  const numCategories = 6;
+  categories = [];
   let categoryIds = await getCategoryIds(numCategories);
   for (let id of categoryIds) {
     let category = await getCategory(id);
@@ -73,7 +72,7 @@ async function fillTable() {
     let $tr = $("<tr>");
     for (let j = 0; j < categories.length; j++) {
       let $td = $("<td>").text(categories[j].clue[i].showing);
-      $td.attr('id', `${j}-${i}`); // Add this line
+      $td.attr("id", `${j}-${i}`); // Add this line
       $tr.append($td);
     }
     $tbody.append($tr);
@@ -82,7 +81,7 @@ async function fillTable() {
   $("body").append($table);
   hideLoadingView();
 }
-$('tbody').on('click', 'td', handleClick); 
+$("tbody").on("click", "td", handleClick);
 /**
  * Handles the event of a user clicking on a cell in a Jeopardy game.
  *
@@ -92,50 +91,48 @@ $('tbody').on('click', 'td', handleClick);
  */
 
 function handleClick(evt) {
-    let $cell = $(evt.target);
-    let [catIdx, clueIdx] = $cell.attr('id').split('-').map(Number);
-    let clue = categories[catIdx].clue[clueIdx];
-    if ($cell.text() === '?') {
-      $cell.text(clue.question);
-    } else if ($cell.text() === clue.question) {
-      $cell.text(clue.answer);
-    } else {
-      return;
-    }
+  let $cell = $(evt.target);
+  let [catIdx, clueIdx] = $cell.attr("id").split("-").map(Number);
+  let clue = categories[catIdx].clue[clueIdx];
+  if ($cell.text() === "?") {
+    $cell.text(clue.question);
+  } else if ($cell.text() === clue.question) {
+    $cell.text(clue.answer);
+  } else {
+    return;
   }
-  $('td').on('click', handleClick);
-  
-
-/** Wipe the current Jeopardy board, show the loading spinner */
+}
+$("td").on("click", handleClick);
 
 function showLoadingView() {
-    const $thead = $("thead");
-    const $tbody = $("tbody");
-    $thead.empty();
-    $tbody.empty();
-    const $spinner = $('<div>').addClass('spinner');
-    $('body').append($spinner);
-  }
-  
+  const $thead = $("thead");
+  const $tbody = $("tbody");
+  $thead.empty();
+  $tbody.empty();
+  $("#start").hide();
+  const $spinner = $("<div>").addClass("spinner");
+  const $text = $("<div>").text("Loading Jeopardy Game").addClass("spinner-text");
+  $spinner.append($text);
+  $("body").append($spinner);
+}
 
-/** Remove the loading spinner and update the button*/
 function hideLoadingView() {
-  const $spinner = $('.spinner');
+  const $spinner = $(".spinner");
   $spinner.remove();
+  $("#start").show();
 }
 
 async function setupAndStart() {
-    showLoadingView();
-    await fillTable();
-    hideLoadingView();
-    $('td').on('click', handleClick);
-  }
-  
-  $(function() {
-    const $button = $('<button>').attr('id', 'start').text('Start/Restart');
-    $('body').append($button);
-    $('#start').on('click', setupAndStart);
-  });
-  
+  showLoadingView();
+  await fillTable();
+  hideLoadingView();
+  $("td").on("click", handleClick);
+}
 
-
+$(function () {
+  const $buttonContainer = $("<div>").attr("id", "button-container");
+  const $button = $("<button>").attr("id", "start").text("Start/Restart");
+  $buttonContainer.append($button);
+  $("body").append($buttonContainer);
+  $("#start").on("click", setupAndStart);
+});
